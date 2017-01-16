@@ -36,13 +36,16 @@
 
 	__lZ85__ is Free Software under the terms of the MIT License.
 
-	This software is inspired from and includes portions of the ZeroMQ
-	reference implementation, Copyright &copy; 2010-2013 iMatix Corporation
-	and Contributors under the terms of the [MIT License][ref-license].
+	This software is inspired from and includes portions of the ZeroMQ Z85
+	Reference Implementation; Copyright &copy; 2010-2013 iMatix Corporation
+	and Contributors, under the terms of the [MIT License][ref-license].
 
 	[ref-license]: https://github.com/zeromq/rfc/blob/master/src/spec_32.c
 
 --]]
+
+--- Copyright (c) 2017 Webster Sheets <webster@web-eworks.com>
+--- lZ85 is Free Software under the terms of the MIT License.
 
 local z85 = {}
 

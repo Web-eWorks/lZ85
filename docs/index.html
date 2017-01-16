@@ -30,19 +30,6 @@
   </div>
   
 
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>
-</pre></div>
-</td>
-</tr><tr id="section-2">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-2">&#182;</a>
-  </div>
-  
-
 <p><strong>lZ85</strong> is a Lua implementation of the
 <a href="https://rfc.zeromq.org/spec:32/Z85/">ZeroMQ 32/Z85 specification</a> for string-encoding binary data
 in an interchange-suitable format.</p>
@@ -81,9 +68,9 @@ and strings are padded if necessary.</p>
 
 <p><strong>lZ85</strong> is Free Software under the terms of the MIT License.</p>
 
-<p>This software is inspired from and includes portions of the ZeroMQ
-reference implementation, Copyright &copy; 2010-2013 iMatix Corporation
-and Contributors under the terms of the <a href="https://github.com/zeromq/rfc/blob/master/src/spec_32.c">MIT License</a>.</p>
+<p>This software is inspired from and includes portions of the ZeroMQ Z85
+Reference Implementation; Copyright &copy; 2010-2013 iMatix Corporation
+and Contributors, under the terms of the <a href="https://github.com/zeromq/rfc/blob/master/src/spec_32.c">MIT License</a>.</p>
 
 
 
@@ -91,13 +78,16 @@ and Contributors under the terms of the <a href="https://github.com/zeromq/rfc/b
 <td class="code">
   <div class="highlight"><pre>
 
+<span class="c">--- Copyright (c) 2017 Webster Sheets &lt;webster@web-eworks.com&gt;
+</span><span class="c">--- lZ85 is Free Software under the terms of the MIT License.
+</span>
 <span class="k">local</span> z85 = {}
 </pre></div>
 </td>
-</tr><tr id="section-3">
+</tr><tr id="section-2">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-3">&#182;</a>
+    <a class="pilcrow" href="#section-2">&#182;</a>
   </div>
   
 <h2>The Implementation:</h2>
@@ -125,10 +115,10 @@ and Contributors under the terms of the <a href="https://github.com/zeromq/rfc/b
     <span class="s">"}@&#37;$#"</span>
 </pre></div>
 </td>
-</tr><tr id="section-4">
+</tr><tr id="section-3">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-4">&#182;</a>
+    <a class="pilcrow" href="#section-3">&#182;</a>
   </div>
   
 <p>We precache divisors for the encoding and decoding steps
@@ -152,10 +142,10 @@ z85.dec_div = {
 }
 </pre></div>
 </td>
-</tr><tr id="section-5">
+</tr><tr id="section-4">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-5">&#182;</a>
+    <a class="pilcrow" href="#section-4">&#182;</a>
   </div>
   
 <p>The official decoding key, stolen straight from the reference
@@ -180,10 +170,10 @@ implementation.</p>
 }
 </pre></div>
 </td>
-</tr><tr id="section-6">
+</tr><tr id="section-5">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-6">&#182;</a>
+    <a class="pilcrow" href="#section-5">&#182;</a>
   </div>
   
 <p>A simple pyramid string-builder function, for performance
@@ -203,10 +193,10 @@ with large strings.</p>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-7">
+</tr><tr id="section-6">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-7">&#182;</a>
+    <a class="pilcrow" href="#section-6">&#182;</a>
   </div>
   
 <p>At the end of a encode/decode, we need to collapse a pyramid
@@ -224,10 +214,10 @@ down to a single value.</p>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-8">
+</tr><tr id="section-7">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-8">&#182;</a>
+    <a class="pilcrow" href="#section-7">&#182;</a>
   </div>
   
 <p>Encode a binary string into Z85.
@@ -249,15 +239,15 @@ The length of the input string must be a multiple of 4.</p>
     <span class="k">if</span> len &#37; 4 &gt; 0 <span class="k">then</span>
         <span class="k">return</span> <span class="k">nil</span>, <span class="s">"Binary data must to be padded to modulo 4!"</span>
     <span class="k">end</span>
-    
+
     <span class="k">local</span> encoded_len = len * 5 // 4
     <span class="k">local</span> encoded_t = {}
-    
+
     <span class="k">local</span> accum = 0
     <span class="k">for</span> i = 1, len <span class="k">do</span>
         <span class="k">local</span> <span class="nt">next</span> = bin_str:sub(i):byte()
         accum = (accum &lt;&lt; 8) + <span class="nt">next</span>
-        
+
         <span class="k">if</span> i &#37; 4 == 0 <span class="k">then</span>
             <span class="k">for</span> i=1, 5 <span class="k">do</span>
                 <span class="k">local</span> idx = accum // z85.enc_div[i] &#37; 85 + 1
@@ -266,7 +256,7 @@ The length of the input string must be a multiple of 4.</p>
             accum = 0
         <span class="k">end</span>
     <span class="k">end</span>
-    
+
     <span class="k">local</span> encoded = collapse(encoded_t)
     <span class="nt">assert</span>(#encoded == encoded_len, <span class="s">"Algorithm error! "</span> .. #encoded .. <span class="s">", "</span> .. encoded_len)
 
@@ -274,10 +264,10 @@ The length of the input string must be a multiple of 4.</p>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-9">
+</tr><tr id="section-8">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-9">&#182;</a>
+    <a class="pilcrow" href="#section-8">&#182;</a>
   </div>
   
 <p>Decode a Z85 string into a binary string.
@@ -299,15 +289,15 @@ The length of the input string must be a multiple of 5.</p>
 	<span class="k">if</span> len &#37; 5 &gt; 0 <span class="k">then</span>
 		<span class="k">return</span> <span class="k">nil</span>, <span class="s">"Encoded data size must be a multiple of 5!"</span>
 	<span class="k">end</span>
-	
+
 	<span class="k">local</span> decoded_len = len * 4 // 5
 	<span class="k">local</span> decoded_t = {}
-	
+
 	<span class="k">local</span> accum = 0
 	<span class="k">for</span> i = 1, len <span class="k">do</span>
 		<span class="k">local</span> <span class="nt">next</span> = txt_str:sub(i):byte() - 32
 		accum = accum * 85 + (z85.dec[<span class="nt">next</span>+1])
-		
+
 		<span class="k">if</span> i &#37; 5 == 0 <span class="k">then</span>
 			<span class="k">for</span> i = 1, 4 <span class="k">do</span>
 				<span class="k">local</span> v = accum // z85.dec_div[i] &#37; 256
@@ -316,10 +306,10 @@ The length of the input string must be a multiple of 5.</p>
 			accum = 0
 		<span class="k">end</span>
 	<span class="k">end</span>
-	
+
 	<span class="k">local</span> decoded = collapse(decoded_t)
 	<span class="nt">assert</span>(#decoded == decoded_len, <span class="s">"Algorithm error! "</span> .. #decoded .. <span class="s">", "</span> .. decoded_len)
-	
+
 	<span class="k">return</span> decoded
 <span class="k">end</span>
 
